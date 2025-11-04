@@ -1,6 +1,6 @@
 # latsolsnbt
 
-Repositori ini berisi skema SQL untuk menyimpan rincian subtes SNBT 2025.
+Repositori ini berisi skema SQL MySQL 8 untuk menyimpan rincian subtes SNBT 2025.
 
 ## Berkas
 
