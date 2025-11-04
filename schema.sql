@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS snbt_subtest_prompts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Seed the SNBT 2025 subtests
-INSERT INTO snbt_subtests AS new (code, name, category, total_questions, duration_minutes, description)
+INSERT INTO snbt_subtests (code, name, category, total_questions, duration_minutes, description)
 VALUES
     ('PU', 'Penalaran Umum', 'Tes Potensi Skolastik', 30, 30.00, 'Mengukur kemampuan memecahkan masalah baru, bernalar abstrak, dan menyusun strategi secara logis melalui penalaran induktif, deduktif, serta kuantitatif.'),
     ('PPU', 'Pengetahuan dan Pemahaman Umum', 'Tes Potensi Skolastik', 20, 15.00, 'Menilai kemampuan memahami, mengomunikasikan, dan mengaitkan pengetahuan penting dalam konteks budaya Indonesia.'),
@@ -77,11 +77,11 @@ VALUES
     ('LBE', 'Literasi Bahasa Inggris', 'Tes Literasi', 20, 20.00, 'Menilai kemampuan memahami, mengevaluasi, dan merefleksikan teks berbahasa Inggris secara kritis.'),
     ('PMAT', 'Penalaran Matematika', 'Tes Literasi', 20, 30.00, 'Menekankan proses memformulasikan, menerapkan, dan menginterpretasikan konsep matematika untuk memecahkan masalah kontekstual.')
 ON DUPLICATE KEY UPDATE
-    name = new.name,
-    category = new.category,
-    total_questions = new.total_questions,
-    duration_minutes = new.duration_minutes,
-    description = new.description;
+    name = VALUES(name),
+    category = VALUES(category),
+    total_questions = VALUES(total_questions),
+    duration_minutes = VALUES(duration_minutes),
+    description = VALUES(description);
 
 -- Cache subtest identifiers for reuse
 SET @subtest_pu := (SELECT id FROM snbt_subtests WHERE code = 'PU');
@@ -93,15 +93,15 @@ SET @subtest_lbe := (SELECT id FROM snbt_subtests WHERE code = 'LBE');
 SET @subtest_pmat := (SELECT id FROM snbt_subtests WHERE code = 'PMAT');
 
 -- Components for Penalaran Umum
-INSERT INTO snbt_subtest_components AS new (subtest_id, name, description, question_count, duration_minutes)
+INSERT INTO snbt_subtest_components (subtest_id, name, description, question_count, duration_minutes)
 VALUES
     (@subtest_pu, 'Penalaran Induktif', 'Mengamati fakta untuk menemukan pola, prinsip, dan aturan yang mendasari situasi baru.', 10, 10.00),
     (@subtest_pu, 'Penalaran Deduktif', 'Menggunakan premis dan prinsip yang diketahui untuk menarik simpulan logis.', 10, 10.00),
     (@subtest_pu, 'Penalaran Kuantitatif', 'Menarik simpulan berdasarkan informasi kuantitatif menggunakan konsep matematika sederhana.', 10, 10.00)
 ON DUPLICATE KEY UPDATE
-    description = new.description,
-    question_count = new.question_count,
-    duration_minutes = new.duration_minutes;
+    description = VALUES(description),
+    question_count = VALUES(question_count),
+    duration_minutes = VALUES(duration_minutes);
 
 -- Cache component identifiers for Penalaran Umum
 SET @component_pu_induktif := (
@@ -115,30 +115,30 @@ SET @component_pu_kuantitatif := (
 );
 
 -- Topics tied to Penalaran Umum components
-INSERT INTO snbt_component_topics AS new (component_id, topic)
+INSERT INTO snbt_component_topics (component_id, topic)
 VALUES
     (@component_pu_induktif, 'Kesesuaian pernyataan'),
     (@component_pu_induktif, 'Sebab-akibat')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
-INSERT INTO snbt_component_topics AS new (component_id, topic)
+INSERT INTO snbt_component_topics (component_id, topic)
 VALUES
     (@component_pu_deduktif, 'Simpulan logis'),
     (@component_pu_deduktif, 'Penalaran analitik')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
-INSERT INTO snbt_component_topics AS new (component_id, topic)
+INSERT INTO snbt_component_topics (component_id, topic)
 VALUES
     (@component_pu_kuantitatif, 'Perbandingan kuantitas'),
     (@component_pu_kuantitatif, 'Hubungan matematika sederhana'),
     (@component_pu_kuantitatif, 'Aritmetika dasar (penjumlahan, pengurangan, perkalian, pembagian)')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Pengetahuan dan Pemahaman Umum
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_ppu, 'Ide pokok makna'),
     (@subtest_ppu, 'Kata dan bentuk kata'),
@@ -146,10 +146,10 @@ VALUES
     (@subtest_ppu, 'Hubungan antar paragraf'),
     (@subtest_ppu, 'Sinonim')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Kemampuan Memahami Bacaan dan Menulis
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_kmbm, 'Ide pokok'),
     (@subtest_kmbm, 'Kepaduan wacana'),
@@ -159,20 +159,20 @@ VALUES
     (@subtest_kmbm, 'Bentuk kata'),
     (@subtest_kmbm, 'Simpulan')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Pengetahuan Kuantitatif
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_pk, 'Bilangan'),
     (@subtest_pk, 'Aljabar dan fungsi'),
     (@subtest_pk, 'Geometri'),
     (@subtest_pk, 'Statistika dan peluang')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Literasi Bahasa Indonesia
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_lbi, 'Teks personal inspiratif'),
     (@subtest_lbi, 'Menentukan inti bacaan'),
@@ -192,10 +192,10 @@ VALUES
     (@subtest_lbi, 'Fakta, data, dan simpulan relevan/tidak relevan dalam bacaan argumentatif'),
     (@subtest_lbi, 'Inferensi meyakinkan dalam bacaan argumentatif')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Literasi Bahasa Inggris
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_lbe, 'Reading literacy focus'),
     (@subtest_lbe, 'Contextual meaning of words'),
@@ -204,10 +204,10 @@ VALUES
     (@subtest_lbe, 'Evaluating arguments and opinions'),
     (@subtest_lbe, 'Interpreting data within texts')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Topics for Penalaran Matematika
-INSERT INTO snbt_subtest_topics AS new (subtest_id, topic)
+INSERT INTO snbt_subtest_topics (subtest_id, topic)
 VALUES
     (@subtest_pmat, 'Bilangan: representasi, sifat urutan, operasi hitung'),
     (@subtest_pmat, 'Himpunan'),
@@ -226,10 +226,10 @@ VALUES
     (@subtest_pmat, 'Aturan pencacahan'),
     (@subtest_pmat, 'Teori peluang')
 ON DUPLICATE KEY UPDATE
-    topic = new.topic;
+    topic = VALUES(topic);
 
 -- Question generation prompts per subtest
-INSERT INTO snbt_subtest_prompts AS new (subtest_id, prompt)
+INSERT INTO snbt_subtest_prompts (subtest_id, prompt)
 VALUES
     (@subtest_pu, 'Buat satu soal pilihan ganda Bahasa Indonesia untuk subtes Penalaran Umum (PU). Pastikan soal mengukur kemampuan penalaran induktif, deduktif, atau kuantitatif sesuai kisi-kisi resmi. Sertakan konteks singkat, empat opsi jawaban (A-D), dan tandai jawaban benar.'),
     (@subtest_ppu, 'Susun satu soal pilihan ganda yang menilai Pengetahuan dan Pemahaman Umum (PPU). Gunakan wacana atau pernyataan terkait budaya Indonesia dan uji aspek ide pokok, kata/bentuk kata, kesesuaian wacana, hubungan antar paragraf, atau sinonim.'),
@@ -239,4 +239,4 @@ VALUES
     (@subtest_lbe, 'Rancang satu soal Literasi Bahasa Inggris (LBE) berbentuk bacaan pendek beserta pertanyaan yang menilai kemampuan memahami ide utama, makna kontekstual, atau evaluasi argumen. Sediakan empat opsi jawaban dan kunci.'),
     (@subtest_pmat, 'Susun satu soal Penalaran Matematika (PMAT) yang memerlukan proses memformulasikan, menerapkan, dan menginterpretasikan konsep matematika. Gunakan konteks nyata, sertakan langkah penyelesaian pada kunci jawaban, dan sediakan empat opsi pilihan.')
 ON DUPLICATE KEY UPDATE
-    prompt = new.prompt;
+    prompt = VALUES(prompt);
